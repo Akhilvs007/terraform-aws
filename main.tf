@@ -15,4 +15,7 @@ provider "aws" {
 resource "aws_instance" "my_nasty_server" {
   ami = "ami-013d21c7f48ae9ff1"
   instance_type = "t2.micro"
+  tags = {
+    Name = "my-nasty-terraform-server"
+  }
 }
