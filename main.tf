@@ -12,6 +12,12 @@ provider "aws" {
     region = "us-east-2"
 }
 
+variable "nasty_port" {
+  description = "web server port"
+  default = 8080
+  type = number
+}
+
 resource "aws_instance" "my_nasty_server" {
   ami = "ami-0ea3c35c5c3284d82"
   instance_type = "t2.micro"
@@ -31,8 +37,8 @@ resource "aws_security_group" "my_nasty_server_security_group" {
   name = "nasty-security-group"
 
   ingress {
-    from_port = 8080
-    to_port = 8080
+    from_port = var.nasty_port
+    to_port = var.nasty_port
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
