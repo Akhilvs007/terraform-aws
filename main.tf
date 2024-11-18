@@ -25,7 +25,7 @@ resource "aws_instance" "my_nasty_server" {
   user_data = <<-EOF
     #!/bin/bash
     echo "Hello, World" > index.html
-    nohup busybox httpd -f -p 8080 &
+    nohup busybox httpd -f -p ${var.nasty_port} &
     EOF
   tags = {
     Name = "my-nasty-terraform-server"
@@ -42,4 +42,9 @@ resource "aws_security_group" "my_nasty_server_security_group" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+output "public_ip" {
+  value = aws_instance.my_nasty_server.public_ip
+  description = "The public ip address of web server"
 }
