@@ -52,7 +52,7 @@ data "aws_vpc" "default" {
 
 #Use the default VPC id and get the default subnet id's
 data "aws_subnet_ids" "default_subnet_ids" {
-  vpc_id = data.aws_vpc_default.default.id
+  vpc_id = data.aws_vpc.default.id
 }
 
 resource "aws_autoscaling_group" "nastry_scale_group" {
