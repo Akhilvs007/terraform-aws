@@ -77,6 +77,8 @@ resource "aws_autoscaling_group" "nastry_scale_group" {
   launch_configuration = aws_launch_configuration.nasty_launch_config.name
   #Use the default subnet id's
   vpc_zone_identifier = data.aws_subnet_ids.default_subnet_ids.ids
+  target_group_arns = [aws_lb_target_group.nasty_asg_target_group.arn]
+  health_check_type = "ELB"
   min_size = 2
   max_size = 10
 
@@ -87,10 +89,29 @@ resource "aws_autoscaling_group" "nastry_scale_group" {
   }
 }
 
+resource "aws_security_group" "nasty_alb_security_group" {
+  name = "terraform-example-alb"
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_lb" "my_nasty_lb" {
   name = "terraform-asg-example"
   load_balancer_type = "application"
   subnets = data.aws_subnet_ids.default_subnet_ids.ids
+  security_groups = [aws_security_group.my_nasty_server_security_group.id]
 }
 
 resource "aws_lb_listener" "http" {
@@ -106,5 +127,22 @@ resource "aws_lb_listener" "http" {
       message_body = "404: page not found"
       status_code = 404
     }
+  }
+}
+
+resource "aws_lb_target_group" "nasty_asg_target_group" {
+  name = "terraform-example-target-group"
+  port = var.nasty_port
+  protocol = "HTTP"
+  vpc_id = data.aws_vpc.default.id
+  
+  health_check {
+    path = "/"
+    protocol = "HTTP"
+    matcher = "200"
+    interval = 15
+    timeout = 3
+    healthy_threshold = 2
+    unhealthy_threshold = 2
   }
 }
