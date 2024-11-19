@@ -146,3 +146,22 @@ resource "aws_lb_target_group" "nasty_asg_target_group" {
     unhealthy_threshold = 2
   }
 }
+
+resource "aws_lb_listener_rule" "asg" {
+  listener_arn = aws_lb_listener.http.arn
+  priority = 1
+  condition {
+    path_pattern {
+      values = ["*"]
+    }
+  }
+  action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.nasty_asg_target_group.arn
+  }
+}
+
+output "alb_dns_name" {
+  value = aws_lb.my_nasty_lb.alb_dns_name  
+  description = "The domain name of load balancer"
+}
