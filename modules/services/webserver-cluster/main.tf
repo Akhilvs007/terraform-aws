@@ -45,10 +45,6 @@ resource "aws_launch_template" "nasty_launch_config" {
   image_id = "ami-0942ecd5d85baa812"
   instance_type = var.instance_type
   security_group_names = [aws_security_group.my_nasty_server_security_group.name]
-  network_interfaces {
-    associate_public_ip_address = false
-    subnet_id = tolist(data.aws_subnet_ids.default_subnet_ids.ids)[1]
-  }
   block_device_mappings {
     device_name = "/dev/sda"
     ebs {
