@@ -78,7 +78,10 @@ data "aws_subnet_ids" "default_subnet_ids" {
 }
 
 resource "aws_autoscaling_group" "nasty_scale_group" {
-  launch_configuration = aws_launch_configuration.nasty_launch_config.name
+  #launch_configuration = aws_launch_configuration.nasty_launch_config.name
+  launch_template {
+    id = aws_launch_template.nasty_launch_config.id
+  }
   #Use the default subnet id's
   vpc_zone_identifier = data.aws_subnet_ids.default_subnet_ids.ids
   target_group_arns = [aws_lb_target_group.nasty_asg_target_group.arn]
