@@ -47,7 +47,7 @@ resource "aws_launch_template" "nasty_launch_config" {
   security_group_names = [aws_security_group.my_nasty_server_security_group.name]
   network_interfaces {
     associate_public_ip_address = false
-    subnet_id = data.aws_vpc.default.id
+    subnet_id = data.aws_subnet_ids.default_subnet_ids
   }
   block_device_mappings {
     device_name = "/dev/sda"
