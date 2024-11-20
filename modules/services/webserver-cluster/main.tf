@@ -46,7 +46,7 @@ resource "aws_launch_template" "nasty_launch_config" {
   instance_type = var.instance_type
   security_group_names = [aws_security_group.my_nasty_server_security_group.name]
   block_device_mappings {
-    device_name = "/dev/sda"
+    device_name = "/dev/sdf"
     ebs {
       volume_size = 10
       delete_on_termination = true 
