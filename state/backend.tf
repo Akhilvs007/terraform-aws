@@ -12,6 +12,16 @@ provider "aws" {
     region = "us-east-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "my-nasty-s3-bucket"
+    key = "global/s3/terraform.tfstate"
+    region = "us-east-2"
+    dynamodb_table = "my-nasty-aws-dynamodb-table"
+    encrypt = true
+  }
+}
+
 resource "aws_s3_bucket" "terraform_state" {
   
   bucket = "my-nasty-s3-bucket"
