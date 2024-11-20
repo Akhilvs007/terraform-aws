@@ -57,11 +57,12 @@ resource "aws_launch_template" "nasty_launch_config" {
       volume_type = "gp2"
     }
   }
-  user_data = <<-EOF
+  user_data = base64encode(<<-EOF
     #!/bin/bash
     echo "Hello, World" > index.html
     nohup busybox httpd -f -p ${var.nasty_port} &
-    EOF  
+    EOF
+  )
   lifecycle {
     create_before_destroy = true
   }
