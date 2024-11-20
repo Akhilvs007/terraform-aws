@@ -12,6 +12,15 @@ provider "aws" {
     region = "us-east-2"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "my-nasty-s3-bucket"
+    key = "stage/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-2"
+    dynamodb_table = "my-nasty-aws-dynamodb-table"
+    encrypt = true
+  }
+}
 variable "nasty_port" {
   description = "web server port"
   default = 8080
