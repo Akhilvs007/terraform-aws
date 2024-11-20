@@ -14,7 +14,7 @@ provider "aws" {
 
 resource "aws_s3_bucket" "terraform_state" {
   
-  bucket = "my_nasty_s3_bucket"
+  bucket = "my-nasty-s3-bucket"
 
   lifecycle {
     prevent_destroy = true
