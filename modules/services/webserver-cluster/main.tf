@@ -25,20 +25,48 @@ resource "aws_security_group" "my_nasty_server_security_group" {
 }
 
 
-resource "aws_launch_configuration" "nasty_launch_config" {
-  image_id = "ami-0ea3c35c5c3284d82"
+# resource "aws_launch_configuration" "nasty_launch_config" {
+#   image_id = "ami-0ea3c35c5c3284d82"
+#   instance_type = var.instance_type
+#   security_groups = [aws_security_group.my_nasty_server_security_group.id]
+#   user_data = <<-EOF
+#     #!/bin/bash
+#     echo "Hello, World" > index.html
+#     nohup busybox httpd -f -p ${var.nasty_port} &
+#     EOF
+
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
+
+resource "aws_launch_template" "nasty_launch_config" {
+  name = "nasty-launch-template"
+  image_id = "ami-0942ecd5d85baa812"
   instance_type = var.instance_type
-  security_groups = [aws_security_group.my_nasty_server_security_group.id]
+  security_group_names = [aws_security_group.my_nasty_server_security_group.name]
+  network_interfaces {
+    associate_public_ip_address = false
+    subnet_id = data.aws_vpc.default.id
+  }
+  block_device_mappings {
+    device_name = "/dev/sda"
+    ebs {
+      volume_size = 10
+      delete_on_termination = true 
+      volume_type = "gp2"
+    }
+  }
   user_data = <<-EOF
     #!/bin/bash
     echo "Hello, World" > index.html
     nohup busybox httpd -f -p ${var.nasty_port} &
-    EOF
-
+    EOF  
   lifecycle {
     create_before_destroy = true
   }
 }
+
 #get the details of VPC
 data "aws_vpc" "default" {
   default = true
