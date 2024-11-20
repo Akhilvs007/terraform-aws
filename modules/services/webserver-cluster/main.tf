@@ -44,7 +44,7 @@ resource "aws_launch_template" "nasty_launch_config" {
   name = "nasty-launch-template"
   image_id = "ami-0942ecd5d85baa812"
   instance_type = var.instance_type
-  security_group_names = [aws_security_group.my_nasty_server_security_group.name]
+  vpc_security_group_ids = [aws_security_group.my_nasty_server_security_group.id]
   user_data = base64encode(<<-EOF
     #!/bin/bash
     echo "Hello, World" > index.html
